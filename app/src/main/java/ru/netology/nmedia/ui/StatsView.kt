@@ -18,7 +18,12 @@ class StatsView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0,
-) : View(context, attrs, defStyleAttr, defStyleRes) {
+) : View(
+    context,
+    attrs,
+    defStyleAttr,
+    defStyleRes,
+) {
     private var radius = 0F
     private var center = PointF(0F, 0F)
     private var oval = RectF(0F, 0F, 0F, 0F)
@@ -74,6 +79,13 @@ class StatsView @JvmOverloads constructor(
             paint.color = colors.getOrNull(index) ?: randomColor()
             canvas.drawArc(oval, startFrom, angle, false, paint)
             startFrom += angle
+
+            //"Дорисуем" овальный хвостик в нужном направлении, чтобы им перекрыть
+            //поледний фрагмент дуги (розовый). Для этого достаточно нарисовать
+            // кусочек дуги размером меньше первого фрагмента.
+            // Цвет "хвостика" выберем в тон самого первого фрагмента:
+            paint.color = colors.getOrNull(0) ?: randomColor()
+            canvas.drawArc(oval, startFrom, 360F * datum / 10, false, paint)
         }
 
         canvas.drawText(
